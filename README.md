@@ -1,2 +1,10 @@
 # DCGAN-and-Style-Transfer
-Implemented a basic GAN (Ian Goodfellow) and implemented an improved version utilizing convolutional layers (DCGAN). Implemented style transfer retaining content and applying the style.
+
+
+### GAN and DCGAN
+
+Developed both a novel Generative Adversarial Network and Deepy Convolutional Generative Adversarial Network.
+
+Both GANS utilize a adversarial binary cross entropy loss. Described generally by: $$
+\mathcal{L}_{\text{GAN}}(G, D) = \mathbb{E}_{y}[\log D(y)] + \mathbb{E}_{x,z}[\log(1 - D(G(x, z)))]
+$$
