@@ -15,5 +15,5 @@ Both GANS utilize a adversarial binary cross entropy loss. Described generally b
 
 We simplified this into two losses which we can minimize over both, just to make model converging easier. Additionally, we applied a sigmoid function to the outputs in order to keep calculations numerically stable (0 < loss < 1). 
 
-The losses are described as:
+The losses are described as:\n
 ![Generator Loss](/imgs/GenLoss.png)
