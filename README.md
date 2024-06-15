@@ -75,12 +75,16 @@ Next the style loss is defined as (below) for each layer:
 
 ![Style Loss](/imgs/StyleLoss.png)
 
+We calculate the Gram Matrix of the source and content images. It gives G and A (respectively) in this equation we get it by doing:
+
+![Gram Matrix](imgs/GramMatrix.png)
+
 The style loss is meant to measure how much the generated image (features at each layer) matches the style of the source image (at each layer). It does this by calculating the Gram Matrix for the features of both the source and generated image. The Gram Matrix approximates the covariance of the features. This allows it to emulate the texture or pattern in the image, by being able to tell that a certain pattern tends to happen in the image. Then for each layer the difference of Gram Matrices is multiplied by a style loss weight similar to the content loss. Then it is finally summed accross each layer.
 
 Finally,
 The total variation loss is defined as:
 
-![Total Variation Loss](/img/TotalVariationLoss.png)
+![Total Variation Loss](/imgs/TotalVariationLoss.png)
 
 The total variation is a form of regularization. In computer vision, often regularization is used to encourage the model to smooth the images (and sometimes prevents hallucinations). Note that x is the generated image. This is done with a L2 loss, where I take the squared difference between each pixel value that is above, below, or horizontal to a pixel value. This function looks scary due to the three summations, but is pretty simple. The first summation is over the channel dimension (3 channels for r,g, and b), the next is over the height dimension (32x16image has height 32), and the final is over the width dimension (32x16 image has width 16). Then the loss is multiplied by a regularization strength. 
 
@@ -91,9 +95,62 @@ In this example, I used content weight: 5e-2, style weights: 20000, 500, 12, 1 (
 
 These are good examples of hyperparameters in training.
 
-Now for some examples:
+**Now for some examples:**
 
-![Input images](/img/StyleTransferStart.png)
+![Input images](/imgs/StyleTransferStart.png)
 
+**Results:**
+
+![Style Transfer Results](/imgs/StyleTransferResults.png)
+
+**Feature Inversion:**
+A cool trick you can do is set the style loss weight to zero and have the source image set to random noise. If you do this you can somewhat regenerate the original (content image).
+
+_Example:_
+
+![Feature Inversion](/imgs/FeatureInversion.png)
+
+**Spatial Style Loss**
+I also implemented a method to localize what styles we want to go where. The idea is that take we have two images and we want the style of the sky in one image to be the sky in the source image and we want the style of the house in one image to be the style of the house in the source image we can do that. This is done by localizing where we apply the styles.
+
+I achieved this with a modified version of the losses above. We do this by modifying the gram matrix (recall this was used to apply texture/style for style loss).
+
+We introduce region channels to single out the region we want a specific style to apply to. This modifies the Gram Matrix to:
+
+![Modified Gram](imgs/ModifiedGram.png)
+
+Using out region filter:
+
+![Region Filter](/imgs/Regions.png)
+
+The filter T is essentially zeros and ones, where there are ones in the region we want to apply style to. Now using this changed Gram Matrix that only applies the 'pattern' to the regions. We modify the style loss to:
+
+![Modified Style Loss](/imgs/ModifiedStyleLoss.png)
+
+There is a small change, where we sum over each region (R). This just ensures that each filter is summed with the rest of the filters, so they combine into one loss. 
+
+With these modifications we can do essentially the same thing as earlier, but with more images. Note that for each image you add to apply a local style to a source image, R becomes larger (R is the number of these images).
+
+**_Example:_**
+
+**Given:**
+
+![Localized Image Inputs](/imgs/LocalInputs.png)
+
+**I get:**
+
+![Localized Outputs](/imgs/LocalResults.png)
+
+Note: I glossed over how we get the regions. This can be done many ways, but a good way to do this is Mask RCNN. It semantically segments the image into classes (take the sky and the house). Read more here: [Mask RCNN Paper](https://arxiv.org/abs/1703.06870)
+
+
+## Sources:
+
+[GAN Paper](https://arxiv.org/abs/1406.2661)
+[DCGAN Paper](https://arxiv.org/abs/1511.06434)
+[InfoGAN Paper](https://arxiv.org/pdf/1606.03657.pdf): used for the generator model architecture.
+[Style Transfer Paper](http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)
+[Feature Inversion Paper](https://arxiv.org/abs/1412.0035)
+[Localized Style Loss Paper]([https://arxiv.org/abs/1703.06870](https://openaccess.thecvf.com/content_cvpr_2017/papers/Gatys_Controlling_Perceptual_Factors_CVPR_2017_paper.pdf))
 
 
