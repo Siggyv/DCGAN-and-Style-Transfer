@@ -156,6 +156,6 @@ Note: I glossed over how we get the regions. This can be done many ways, but a g
 
 - [Feature Inversion Paper](https://arxiv.org/abs/1412.0035)
 
-- [Localized Style Loss Paper]([https://arxiv.org/abs/1703.06870](https://openaccess.thecvf.com/content_cvpr_2017/papers/Gatys_Controlling_Perceptual_Factors_CVPR_2017_paper.pdf))
+- [Localized Style Loss Paper](https://openaccess.thecvf.com/content_cvpr_2017/papers/Gatys_Controlling_Perceptual_Factors_CVPR_2017_paper.pdf)
 
 
