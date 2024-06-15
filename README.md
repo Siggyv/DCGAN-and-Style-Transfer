@@ -150,7 +150,7 @@ Note: I glossed over how we get the regions. This can be done many ways, but a g
 
 - [DCGAN Paper](https://arxiv.org/abs/1511.06434)
 
-- [InfoGAN Paper](https://arxiv.org/pdf/1606.03657.pdf): used for the generator model architecture.
+- [InfoGAN Paper](https://arxiv.org/pdf/1606.03657.pdf): used for the generator model architecture in DCGAN.
 
 - [Style Transfer Paper](http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)
 
