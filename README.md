@@ -57,4 +57,43 @@ Results Evaluation:
 
 ## Style Transfer
 
-I developed a 
+I developed an algorithm to do style transfer. Style transfer is where you take a image (say a monet painting) and another image (say a cityscape) and apply the style of one of the images to the other image. In this example, it would produce a city scape painted by Monet. The nice thing is that it works both ways, you can take a Monet painting and remove the Monet style, which would give the landscape Monet potrayed. 
+
+Sounds cool, but how was it done?
+
+In my case, I used a pretrained model and then fine tuned it to complete this task. The model I used was SqueezeNet which was trained on ImageNet (a very large set of images). To do this I used a curated loss function comprised of three tasks: content loss + style loss + total variation loss.
+
+The content loss is defined as:
+
+![Content Loss](/imgs/ContentLoss.png)
+
+The content loss is meant to measure the differences of features (fancy term for outputs) at each layer of the generated image compares to the source image. The idea is that the generated image should match the source image roughly in structure. It should remain relatively the same. 
+
+This function takes the sum of the squared difference between both feature maps at each point in the map. Essentially just a L2 loss over each feature map. Then multiplies by a weight (set by the user) w_c.
+
+Next the style loss is defined as (below) for each layer:
+
+![Style Loss](/imgs/StyleLoss.png)
+
+The style loss is meant to measure how much the generated image (features at each layer) matches the style of the source image (at each layer). It does this by calculating the Gram Matrix for the features of both the source and generated image. The Gram Matrix approximates the covariance of the features. This allows it to emulate the texture or pattern in the image, by being able to tell that a certain pattern tends to happen in the image. Then for each layer the difference of Gram Matrices is multiplied by a style loss weight similar to the content loss. Then it is finally summed accross each layer.
+
+Finally,
+The total variation loss is defined as:
+
+![Total Variation Loss](/img/TotalVariationLoss.png)
+
+The total variation is a form of regularization. In computer vision, often regularization is used to encourage the model to smooth the images (and sometimes prevents hallucinations). Note that x is the generated image. This is done with a L2 loss, where I take the squared difference between each pixel value that is above, below, or horizontal to a pixel value. This function looks scary due to the three summations, but is pretty simple. The first summation is over the channel dimension (3 channels for r,g, and b), the next is over the height dimension (32x16image has height 32), and the final is over the width dimension (32x16 image has width 16). Then the loss is multiplied by a regularization strength. 
+
+With these three losses combined, we can selectively choose how much source style we want, how much source content we want, and how much variation we want in pixel values. 
+
+In this example, I used content weight: 5e-2, style weights: 20000, 500, 12, 1 (for each layer), and total variation weight: 5e-2.
+  The style weights were chosen such that the early information in the convolutions is prioritized (to keep initial structure similar). 
+
+These are good examples of hyperparameters in training.
+
+Now for some examples:
+
+![Input images](/img/StyleTransferStart.png)
+
+
+
